@@ -38,19 +38,21 @@ struct ContentView: View {
                 }
                 .offset(y: offset) // 取得したスクロール量でヘッダー部分を動かす
             }
-            .ignoresSafeArea(edges: .bottom)
             .environmentObject(viewModel)
+            .onChange(of: offset, perform: { newValue in
+                print("offset: \(newValue)")
+            })
+            .refreshable {
+                
+            }
         }
     }
 
     // ヘッダーの動く範囲を決めて、sticky headerを実現する
     private func updateOffset(_ newOffset: CGFloat, safeAreaInsetsTop: CGFloat) {
-        // FIXME: リスト上部にゆっくりスクロールしようとすると震える事象があるが、記事で対応した事象とは異なるみたい
         // https://techlife.cookpad.com/entry/2023/02/28/163645
         if newOffset <= -topAreaHeight + safeAreaInsetsTop {
             offset = -topAreaHeight + safeAreaInsetsTop
-        } else if newOffset >= 0.0 {
-            offset = 0
         } else {
             offset = newOffset
         }
